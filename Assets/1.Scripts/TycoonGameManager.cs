@@ -141,6 +141,16 @@ public class TycoonGameManager : MonoBehaviour
 
     public void MoveStage(GameStage stage)
     {
+        switch (currentStage)
+        {
+            case GameStage.FillCup:
+                curCup.SetLine(false);
+                curCup.SetTransparent(false);
+                break;
+
+
+        }
+
         currentStage = stage;
         Camera cam = Camera.main;
 
@@ -158,6 +168,16 @@ public class TycoonGameManager : MonoBehaviour
             curCup.gameObject.SetActive(true);
             curCup.transform.parent = _t;
             ResetTransform(curCup.transform);
+        }
+
+        switch (currentStage)
+        {
+            case GameStage.FillCup:
+                curCup.SetLine(true);
+                curCup.SetTransparent(true);
+                break;
+            
+            
         }
 
         SetActiveUI();
