@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public enum GameState
 {
@@ -96,9 +97,18 @@ public class TycoonGameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private UIObjects[] uiObjects;
     [SerializeField] private Slider timerSlider;
+    [SerializeField] private GameObject TopUI;
+    [SerializeField] private TMP_Text customerName;
+    [SerializeField] private TMP_Text levelText;
+
+    [Header("Managers")]
+    [SerializeField] private OrderManager orderManager;
 
     private int level = -1;
     private Coroutine timerCoroutine;
+
+    [HideInInspector] public Order curOrder;
+
     
 
     private void Start()
@@ -114,7 +124,7 @@ public class TycoonGameManager : MonoBehaviour
         }
 
         // DEBUG
-        StartGame(0);
+        StartGame(1);
 
     }
 
@@ -135,7 +145,11 @@ public class TycoonGameManager : MonoBehaviour
     {
         this.level = level;
         MoveStage(GameStage.Order);
-        timerCoroutine = StartCoroutine(decreaseTimer(60)); // test 60초2
+        timerCoroutine = StartCoroutine(decreaseTimer(60)); // test 60초
+
+        orderManager.chooseOrder(level - 1);
+        levelText.text = level + "일차";
+        customerName.text = curOrder.name;
     }
     
 
