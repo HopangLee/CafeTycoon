@@ -37,6 +37,7 @@ public class ChooseCupManager : MonoBehaviour
                     {
                         Debug.Log("choose hot cup");
                         TycoonGameManager.instance.curCup = hotCup;
+                        hotCup.CupMatReset();
                         TycoonGameManager.instance.MoveNextStage();
                        
                     }
@@ -44,6 +45,7 @@ public class ChooseCupManager : MonoBehaviour
                     {
                         Debug.Log("choose ice cup");
                         TycoonGameManager.instance.curCup = iceCup;
+                        iceCup.CupMatReset();
                         TycoonGameManager.instance.MoveNextStage();
                     }
                     return;

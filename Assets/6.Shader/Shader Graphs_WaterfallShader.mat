@@ -53,6 +53,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RipplesAmount: 0.6
+    - _Split_Value: 1.3364103
     - _VertexOffsetAmount: 0.1
     - _VornoiScale: 5.29
     - _VornoiSpeed: 2

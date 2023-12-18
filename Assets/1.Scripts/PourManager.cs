@@ -6,11 +6,14 @@ public class PourManager : MonoBehaviour
 {
     [SerializeField] GameObject milk;
     [SerializeField] GameObject water;
-    private float threshold = -0.15f;
+    private float threshold = -0.17f;
 
     [SerializeField] private Transform liquidOutPos;
+    [SerializeField] private Material waterFallMat;
     private float min_pourAmount = 0;
-    private float max_pourAmount = 1.2f;
+    private float max_pourAmount = 1f;
+
+    private bool isPouring = false;
 
     private void Update()
     {
@@ -31,18 +34,24 @@ public class PourManager : MonoBehaviour
             MilkOn();
             if (rot < threshold)
             {
+                Cup _cup = TycoonGameManager.instance.curCup;
+                waterFallMat.SetFloat("_Split_Value", _cup.transform.position.y + _cup.getRealLiquidHeight());
                 float amount = Mathf.Lerp(min_pourAmount, max_pourAmount, Mathf.Min((threshold - rot), 1));
                 liquidOutPos.localScale = new Vector3(amount, 1, 1);
                 if(!liquidOutPos.gameObject.activeSelf) liquidOutPos.gameObject.SetActive(true);
 
                 TycoonGameManager.instance.curCup.PourLiquid(amount * Time.deltaTime);
-                Debug.Log("우유 부음 value : " + (int)(rot * 100));
-
+                if (!isPouring) isPouring = true;
             }
             else
             {
                 if (liquidOutPos.gameObject.activeSelf) liquidOutPos.gameObject.SetActive(false);
-                Debug.Log("우유 멈춤 value : " + (int)(rot * 100));
+
+                if (isPouring && rot >= 0)
+                {
+                    isPouring = false;
+                    TycoonGameManager.instance.MoveNextStage();
+                }
             }
         }
         else
@@ -50,15 +59,24 @@ public class PourManager : MonoBehaviour
             WaterOn();
             if (rot < threshold)
             {
+                Cup _cup = TycoonGameManager.instance.curCup;
+                waterFallMat.SetFloat("_Split_Value", _cup.transform.position.y + _cup.getRealLiquidHeight());
                 float amount = Mathf.Lerp(min_pourAmount, max_pourAmount, Mathf.Min((threshold - rot), 1));
                 liquidOutPos.localScale = new Vector3(amount, 1, 1);
                 if (!liquidOutPos.gameObject.activeSelf) liquidOutPos.gameObject.SetActive(true);
-                Debug.Log(" 부음 value : " + (int)(rot * 100));
+
+                TycoonGameManager.instance.curCup.PourLiquid(amount * Time.deltaTime);
+                if (!isPouring) isPouring = true; ;
             }
-            else
+            else 
             {
                 if (liquidOutPos.gameObject.activeSelf) liquidOutPos.gameObject.SetActive(false);
-                Debug.Log("물 멈춤 value : " + (int)(rot * 100));
+
+                if (isPouring && rot >= 0)
+                {
+                    isPouring = false;
+                    TycoonGameManager.instance.MoveNextStage();
+                }
             }
         }
     }

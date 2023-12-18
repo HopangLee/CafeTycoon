@@ -360,6 +360,7 @@ MonoBehaviour:
   yellow: {fileID: 2100000, guid: 9b6ed86535ee94da28f74717503158e8, type: 2}
   green: {fileID: 2100000, guid: 50f6a79b4196b4e38ad07fdea0dad348, type: 2}
   gray: {fileID: 2100000, guid: 65c4777b340d1462981ad1d6cc0b2de7, type: 2}
+  shotCup: {fileID: 1792059897}
   isFilled: 0
 --- !u!135 &1740825148
 SphereCollider:
@@ -580,6 +581,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: cappuccino
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d06f6a84e3c562240ab966f3a5f0d459, type: 3}
+      propertyPath: m_TagString
+      value: Shot Cup
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d06f6a84e3c562240ab966f3a5f0d459, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -644,6 +649,25 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2058896473126104540}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2058896473126202236 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: d06f6a84e3c562240ab966f3a5f0d459,
+    type: 3}
+  m_PrefabInstance: {fileID: 2058896473126104540}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &1792059897
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058896473126202236}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.14
+  m_Center: {x: 0.023629073, y: 0.051299036, z: 0}
 --- !u!1001 &4360321583699923633
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -29,6 +29,7 @@ public enum CupType
 {
     Hot,
     Ice,
+    ALL,
 }
 
 public enum LiquidType
@@ -65,6 +66,7 @@ public struct CupPos
 {
     public GameStage gameStage;
     public Transform tr;
+    public CupType cupType;
 }
 
 [System.Serializable]
@@ -104,7 +106,7 @@ public class TycoonGameManager : MonoBehaviour
     [Header("Managers")]
     [SerializeField] private OrderManager orderManager;
 
-    private int level = -1;
+    private int level = 1;
     private Coroutine timerCoroutine;
 
     [HideInInspector] public Order curOrder;
@@ -124,7 +126,7 @@ public class TycoonGameManager : MonoBehaviour
         }
 
         // DEBUG
-        StartGame(1);
+        StartGame(level);
 
     }
 
@@ -145,6 +147,7 @@ public class TycoonGameManager : MonoBehaviour
     {
         this.level = level;
         MoveStage(GameStage.Order);
+        if(timerCoroutine != null) StopCoroutine(timerCoroutine);
         timerCoroutine = StartCoroutine(decreaseTimer(60)); // test 60초
 
         orderManager.chooseOrder(level - 1);
@@ -159,7 +162,7 @@ public class TycoonGameManager : MonoBehaviour
         {
             case GameStage.FillCup:
                 curCup.SetLine(false);
-                curCup.SetTransparent(false);
+                
                 break;
 
 
@@ -173,6 +176,8 @@ public class TycoonGameManager : MonoBehaviour
         Transform _t;
 
         if ((_t = GetCameraPos(stage)) != null) {
+            if (cam == null) Debug.Log("NULL");
+            else if(cam.transform.parent == null) Debug.Log(" PARENT NULL");
             cam.transform.parent = _t;
             ResetTransform(cam.transform);
         }
@@ -188,7 +193,7 @@ public class TycoonGameManager : MonoBehaviour
         {
             case GameStage.FillCup:
                 curCup.SetLine(true);
-                curCup.SetTransparent(true);
+                
                 break;
             
             
@@ -209,6 +214,13 @@ public class TycoonGameManager : MonoBehaviour
     {
         if (currentStage == GameStage.Evalution) MoveStage(GameStage.Order);
         else MoveStage((currentStage + 1));
+    }
+
+    public void ClearAndNextStage()
+    {
+        //MoveStage(GameStage.Order);
+        level++;
+        StartGame(level);
     }
 
     private void SetActiveUI()
@@ -255,7 +267,7 @@ public class TycoonGameManager : MonoBehaviour
     {
         foreach (var c in cupPos)
         {
-            if (c.gameStage == g)
+            if (c.gameStage == g && (curCup.cupType == c.cupType || c.cupType == CupType.ALL) )
             {
                 return c.tr;
             }
@@ -300,8 +312,8 @@ public class TycoonGameManager : MonoBehaviour
         float curTime = 0;
         while (curTime < limitTime) {
             if(currentGameState == GameState.Playing) {
-                yield return new WaitForSeconds(0.2f);
-                curTime += 0.2f;
+                yield return new WaitForSeconds(0.1f);
+                curTime += 0.1f;
                 timerSlider.value = Mathf.Max(0, 1 - curTime / limitTime);
             }
         }

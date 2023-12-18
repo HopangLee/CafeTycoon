@@ -10,25 +10,32 @@ public class Cup : MonoBehaviour
     float milkTemp = 0; // 우유 온도
     private int shotNum = 0; // 샷 개수
 
+
+
     LiquidType liquidType;
     bool[] toppings = new bool[Enum.GetValues(typeof(Topping)).Length]; // 해당 topping이 있으면 true, 없으면 false
     LatteArt latteArt;
 
     [Header("Materaials for pour scene")]
-    [SerializeField] Material opaque_mat;
-    [SerializeField] Material tranparent_mat;
-    [SerializeField] private GameObject line;
+    [SerializeField] Material cup_mat;
+    [SerializeField] Material liquid_mat;
 
-    [Header("Liquid, Shot, Bubble")]
-    [SerializeField] Transform Liquid;
-    [SerializeField] Transform Shot;
-    //[SerializeField] Transform bubble;
+    [Header("Cup Info")]
+    [SerializeField] float cupTransValue = 0.085f;
+    [SerializeField] float maxAmount = 0.075f;
+    [SerializeField] float minAmount = -0.066f;
+    [SerializeField] float lineHeight = 0f;
+    float maxShotAmount = -0.03f;
 
-    private float floorPosY = 0.01f;
 
     public float getLiquid()
     {
         return liquidAmount;
+    }
+
+    public float getRealLiquidHeight()
+    {
+        return minAmount + liquidAmount;
     }
 
     public float getTemp()
@@ -66,30 +73,41 @@ public class Cup : MonoBehaviour
 
     public void SetLine(bool _bool)
     {
-        if(line!=null)
-            line.SetActive(_bool);
+        cup_mat.SetFloat("_Fill_Amount", _bool ? cupTransValue : 1.0f) ;
+
+        cup_mat.SetFloat("_Show_Line", _bool ? 1.0f : 0.0f);
+
+        cup_mat.SetFloat("_Line_Height", _bool ? lineHeight : 0f);
+        Debug.Log("_bool : " + _bool);
     }
 
     public void AddShot()
     {
         shotNum++;
+        liquidAmount = Mathf.Min(liquidAmount + (maxShotAmount - minAmount)/4 , maxShotAmount - minAmount);
+        liquid_mat.SetFloat("_Split_Value", minAmount + liquidAmount);
+        liquid_mat.SetFloat("_ShotRatio", Mathf.Sin(shotNum/4 * Mathf.PI/2));
     }
 
     public void PourLiquid(float amount)
     {
-        liquidAmount = Mathf.Min(liquidAmount + amount, 1.1f);
-        Liquid.localScale = new Vector3(Liquid.localScale.x, liquidAmount,Liquid.localScale.z);
+        if (cupType == CupType.Hot)
+            amount *= 0.2f;
+        else amount *= 1f;
+
+        liquidAmount = Mathf.Min(liquidAmount + amount, maxAmount - minAmount);
+        liquid_mat.SetFloat("_Split_Value", minAmount + liquidAmount);
     }
 
-    public void SetTransparent(bool _bool)
+    public void CupMatReset()
     {
-        if (_bool)
-        {
-            this.GetComponentInChildren<MeshRenderer>().material = tranparent_mat;
-        }
-        else
-        {
-            this.GetComponentInChildren<MeshRenderer>().material = opaque_mat;
-        }
+        cup_mat.SetFloat("_Fill_Amount", 1.0f);
+
+        cup_mat.SetFloat("_Show_Line",  0.0f);
+
+        float _zero = liquid_mat.GetFloat("_zero_value");
+
+        liquid_mat.SetFloat("_Split_Value", _zero);
+        liquidAmount = 0;
     }
 }

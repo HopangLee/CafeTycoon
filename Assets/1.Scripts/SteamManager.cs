@@ -17,20 +17,30 @@ public class SteamManager : MonoBehaviour
     private float temperature;
     Coroutine temperatureUp;
 
-    public void onClickButton()
+    private void Awake()
+    {
+        button.GetComponent<PointerDownUpHandler>().setSteamManager(this);
+    }
+
+    public void onPressedButton()
     {
         if (!isActive)
         {
             isActive = true;
-            buttonText.text = "멈 춤";
+            buttonText.text = "작동중";
             button.sprite = buttonStopImg;
             temperatureUp =  StartCoroutine(TemperatureUp());
         }
-        else
+    }
+
+    public void onReleasedButton()
+    {
+        if (isActive)
         {
             isActive = false;
-            buttonText.text = "작 동";
+            buttonText.text = "시 작";
             button.sprite = buttonStartImg;
+            //StopCoroutine(temperatureUp);
             TycoonGameManager.instance.MoveNextStage();
         }
     }
